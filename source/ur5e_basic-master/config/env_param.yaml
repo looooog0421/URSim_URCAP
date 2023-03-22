@@ -1,0 +1,21 @@
+gravity_down_joints: [180, -90, -90, -90, 90, 90]
+use_last_end_mass_center: true
+end_admittance_control: true
+
+# 末端重力补偿
+gravity_up_joints: [-90, -90, -90, -90, -90, 90]
+gravity_down_joints: [-90, -90, -90, -90, 90, 90]
+middle_joints: [-90, -90, -90, -90, 0, 90]
+start_joints: [-90, -90, -90, -90, 90, 90]
+damp_ratio: 0.03
+
+# 擦黑板
+erase_blackboard_start_joints: [-90, -90, -90, -90, 90, 90]
+# erase_blackboard_start_joints_board_up: [-102.28, -105.12, -105.08, -59.80, 89.91, 77.78]
+erase_blackboard_start_joints_board_up: [-103.45, -111.11, -94.95, -64.31, 89.89, 76.54]
+# kp: 0.004
+# kp: 0.00005 # 位置控制的kp
+kp: 0.00038 # 位置控制的 kp = 0.000119 ki = 0.0007
+ki: 0.004
+# kd: 0.02375
+pidOrAdmittance: false

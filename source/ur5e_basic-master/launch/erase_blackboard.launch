@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="load_robotiq_gripper" default="false"/>
+    <arg name="limited" default="false"/>
+    <!-- <arg name="robot_ip" default="192.168.10.103" /> -->
+    <arg name="robot_ip" default="0.0.0.0" />
+    <!--  pos_joint_traj_controller 用于实时控制; scaled_pos_joint_traj_controller发目标位置会造成中间停顿; 两个控制器只能只能一个启动 -->
+    <arg name="controllers" default="joint_state_controller pos_joint_traj_controller speed_scaling_state_controller force_torque_sensor_controller"/>
+    <arg name="stopped_controllers" default="scaled_pos_joint_traj_controller joint_group_vel_controller"/>
+
+    <group ns = "UR5e">
+        <include file="$(find ur_robot_driver)/launch/ur5e_bringup.launch" >
+            <arg name="robot_ip" value="$(arg robot_ip)" />
+            <arg name="controllers" value="$(arg controllers)" />
+            <arg name="stopped_controllers" value="$(arg stopped_controllers)" />
+        </include>
+    </group>
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ur5e_basic)/config/ur5e.rviz" />
+
+    <rosparam command="load" file="$(find ur5e_basic)/config/env_param.yaml" />
+
+    <!-- 夹住黑板擦 -->
+    <group if="$(arg load_robotiq_gripper)">
+        <group ns = "robotiq"> 
+            <include file="$(find robotiq_85_bringup)/launch/robotiq_85.launch"/>
+        </group>
+    </group>
+    
+    <!-- robot_iq gripper grasp frame to ur5e tool0 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="gripper2tool0"
+        args="0 0 0 -1.570796327 -1.570796327 0 tool0 gripper_root_link" />
+
+    <node pkg="tf2_ros" type="static_transform_publisher" name="grasp2gripperRoot"
+        args="0 0 0.14 0 0 0 tool0 grasp_frame" />
+
+    <!-- ATI -->
+    <node pkg="netft_utils" type="netft_node" name="netft_node" args="192.168.10.104" />
+
+</launch>
